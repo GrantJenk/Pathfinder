@@ -90,16 +90,6 @@ void App::draw()
             Node* curNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
             SDL_Color color = getNodeColor(curNode);
 
-            if ( !m_pathfinder.getPath().empty() ) {
-                for (auto el: m_pathfinder.getPath())
-                {
-                    if (el == curNode)
-                    {
-                        color = {0, 255, 0, 255};
-                    }
-                }
-            }
-
             SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
             SDL_Rect rect;
@@ -124,6 +114,8 @@ SDL_Color App::getNodeColor(Node* node)
 {
     if (node == m_beginNode || node == m_endNode)
         return {255, 125, 0, 255};
+    if (node->inPath)
+        return {0, 255, 0, 255};
     if (node->isWall)
         return {0, 0, 0, 255};
     if (node->visited)

@@ -36,9 +36,9 @@ std::vector<Node*> Pathfinder::aStar(Location start, Location dest)
             while (backtrack != nullptr)
             {
                 result.push_back(backtrack);
+                backtrack->inPath = true;
                 backtrack = backtrack->parent;
             }
-            m_path = result;
             return result;
         }
 
@@ -89,7 +89,6 @@ std::vector<Node*> Pathfinder::aStar(Location start, Location dest)
         }
     }
 
-    m_path = result;
     return result;
 }
 
@@ -124,12 +123,12 @@ void Pathfinder::resetPath()
         {
             Node* cur = &m_grid[row * m_cols + col];
             cur->visited = false;
+            cur->inPath = false;
             cur->F = INFINITY;
             cur->G = INFINITY;
             cur->parent = nullptr;
         }
     }
-    m_path.clear();
 }
 
 void Pathfinder::emptyGrid()
@@ -149,11 +148,6 @@ void Pathfinder::emptyGrid()
 Node* Pathfinder::getGrid() const
 {
     return m_grid;
-}
-
-std::vector<Node*> Pathfinder::getPath() const
-{
-    return m_path;
 }
 
 int Pathfinder::getCols() const

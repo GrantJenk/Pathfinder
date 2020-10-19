@@ -24,8 +24,6 @@ public:
 
     Node* getGrid() const;
 
-    std::vector<Node*> getPath() const;
-
     int getCols() const;
     int getRows() const;
 
@@ -34,7 +32,6 @@ private:
     int m_rows;
     bool m_useDiagonals;
     Node* m_grid;
-    std::vector<Node*> m_path;
 };
 
 #endif // PATHFINDER_H

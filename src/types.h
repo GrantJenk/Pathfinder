@@ -15,6 +15,7 @@ struct Node
     int row;
     bool isWall = false;
     bool visited = false;
+    bool inPath = false;
     float G = INFINITY;
     float F = INFINITY;
     Node* parent = nullptr;
