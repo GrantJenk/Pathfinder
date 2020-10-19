@@ -1,12 +1,19 @@
 #include "app.h"
 
-App::App(int numOfCols, int numOfRows, bool useDiagonals) :
-    m_running(true), m_window(nullptr), m_renderer(nullptr), m_pathfinder(numOfCols, numOfRows, useDiagonals), m_beginNode(nullptr), m_endNode(nullptr)
+App::App(int numOfCols, int numOfRows, bool useDiagonals) : m_pathfinder(numOfCols, numOfRows, useDiagonals)
 {
+    m_running = true;
+    m_window = nullptr;
+    m_renderer = nullptr;
+    m_dragStartNode = m_dragEndNode = false;
+    m_beginNode = nullptr;
+    m_endNode = nullptr;
+    m_SQDIM = 800/numOfCols;
+
     SDL_Init(SDL_INIT_VIDEO);
     m_window = SDL_CreateWindow("A* Pathfinder", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_RESIZABLE);
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    m_SQDIM = 800/numOfCols;
+
     m_pathfinder.randomizeWalls(30);
 }
 
@@ -31,12 +38,13 @@ void App::handleInput()
     SDL_Event e;
     while (SDL_PollEvent(&e))
     {
-        if (e.type == SDL_QUIT)
+        switch (e.type)
         {
+        case SDL_QUIT:
             m_running = false;
-            return;
-        }
-        else if (e.type == SDL_MOUSEBUTTONDOWN)
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
         {
             int col = e.button.x/m_SQDIM;
             int row = e.button.y/m_SQDIM;
@@ -49,7 +57,15 @@ void App::handleInput()
                 if (grid[index].isWall)
                     return;
 
-                if (m_beginNode == nullptr)
+                if (clickedNode == m_beginNode && m_endNode != nullptr)
+                {
+                    m_dragStartNode = true;
+                }
+                else if (clickedNode == m_endNode)
+                {
+                    m_dragEndNode = true;
+                }
+                else if (m_beginNode == nullptr)
                 {
                     m_beginNode = clickedNode;
                 }
@@ -74,7 +90,43 @@ void App::handleInput()
                 m_endNode = nullptr;
                 clickedNode->isWall = !clickedNode->isWall;
             }
+        break;
         }
+
+        case SDL_MOUSEBUTTONUP:
+            m_dragStartNode = false;
+            m_dragEndNode = false;
+            break;
+
+        case SDL_MOUSEMOTION:
+            if (m_dragStartNode || m_dragEndNode)
+            {
+                int col = e.motion.x/m_SQDIM;
+                int row = e.motion.y/m_SQDIM;
+                Node* hoverNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
+                if (!hoverNode->isWall && hoverNode != m_beginNode && hoverNode != m_endNode)
+                {
+                    if (m_dragEndNode) { m_endNode = hoverNode; };
+                    if (m_dragStartNode) { m_beginNode = hoverNode; };
+                    m_pathfinder.resetPath();
+                    m_pathfinder.aStar(m_beginNode, m_endNode);
+                }
+            }
+            break;
+        }
+/*
+        else if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+
+        }
+        else if (e.type == SDL_MOUSEBUTTONUP)
+        {
+
+        }
+        else if (e.type == SDL_MOUSEMOTION)
+        {
+
+        }*/
     }
 }
 
@@ -112,14 +164,17 @@ void App::draw()
 
 SDL_Color App::getNodeColor(Node* node)
 {
-    if (node == m_beginNode || node == m_endNode)
-        return {255, 125, 0, 255};
-    if (node->inPath)
+    if (node == m_beginNode)
         return {0, 255, 0, 255};
-    if (node->isWall)
+    else if (node == m_endNode)
+        return {255, 0, 0, 255};
+
+    if (node->inPath)
+        return {0, 200, 255, 255};
+    else if (node->isWall)
         return {0, 0, 0, 255};
-    if (node->visited)
-        return {128, 150, 255, 255};
+    else if (node->visited)
+        return {200, 200, 255, 255};
 
     return {255, 255, 255, 255};
 }

@@ -26,6 +26,8 @@ private:
     bool m_running;
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
+    bool m_dragStartNode;
+    bool m_dragEndNode;
     int m_SQDIM;
     Node* m_beginNode;
     Node* m_endNode;
