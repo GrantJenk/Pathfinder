@@ -114,19 +114,6 @@ void App::handleInput()
             }
             break;
         }
-/*
-        else if (e.type == SDL_MOUSEBUTTONDOWN)
-        {
-
-        }
-        else if (e.type == SDL_MOUSEBUTTONUP)
-        {
-
-        }
-        else if (e.type == SDL_MOUSEMOTION)
-        {
-
-        }*/
     }
 }
 
