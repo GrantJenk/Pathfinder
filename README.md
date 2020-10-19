@@ -9,6 +9,7 @@ Pathfinder using A* search algorithm, written in C++
 - Randomize walls
 - Add or remove walls with right click
 - Select start and end nodes with left click
+- Toggle diagonal traversing
 
 ## Preview
 ![Preview](/screenshots/preview.png)
