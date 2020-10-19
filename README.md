@@ -11,4 +11,4 @@ Pathfinder using A* search algorithm, written in C++
 - Select start and end nodes with left click
 
 ## Preview
-![Preview](/screenshot/preview.png)
+![Preview](/screenshots/preview.png)
