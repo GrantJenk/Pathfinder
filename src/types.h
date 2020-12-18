@@ -11,8 +11,7 @@ struct Location
 
 struct Node
 {
-    int col;
-    int row;
+    Location loc;
     bool isWall = false;
     bool visited = false;
     bool inPath = false;

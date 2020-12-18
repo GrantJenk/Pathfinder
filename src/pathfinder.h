@@ -11,16 +11,9 @@ public:
     Pathfinder(int cols, int rows, bool useDiagonals);
     ~Pathfinder();
 
-<<<<<<< Updated upstream
-    std::vector<Node*> aStar(Location start, Location dest);
-    std::vector<Node*> aStar(Node* start, Node* dest);
-
-    float heuristic(Node* a, Node* b);
-=======
     void aStar(const Location& start, const Location& dest);
 
     void toggleWall(const Location& loc);
->>>>>>> Stashed changes
 
     void randomizeWalls(int percentChance);
 
@@ -28,11 +21,6 @@ public:
 
     void emptyGrid();
 
-<<<<<<< Updated upstream
-    Node* getGrid() const;
-
-=======
->>>>>>> Stashed changes
     int getCols() const;
     int getRows() const;
     const Node& getNode(const Location& loc) const;

@@ -30,13 +30,8 @@ void Pathfinder::aStar(const Location& start, const Location& dest)
 
     while( !openSet.empty() )
     {
-<<<<<<< Updated upstream
-        Node* curNode = ( *std::min_element(openSet.begin(), openSet.end(), [](Node* a, Node* b) { return a->F < b->F; }) );
-        if (curNode == destNode)
-=======
         Node* curNode = ( *std::min_element(openSet.begin(), openSet.end(), [](const Node* a, const Node* b){ return a->F < b->F; }) );
         if (curNode == &destNode)
->>>>>>> Stashed changes
         {
             Node* backtrack = curNode;
             while (backtrack != nullptr)
@@ -51,8 +46,8 @@ void Pathfinder::aStar(const Location& start, const Location& dest)
         openSet.erase(curNodePos);
 
         std::vector<Node*> neighbors;
-        int row = curNode->row;
-        int col = curNode->col;
+        int row = curNode->loc.row;
+        int col = curNode->loc.col;
         if (col > 0)
             neighbors.push_back(&m_grid[row * m_cols + (col - 1)]);
         if (row > 0)
@@ -93,28 +88,12 @@ void Pathfinder::aStar(const Location& start, const Location& dest)
             }
         }
     }
-<<<<<<< Updated upstream
-
-    return result;
-}
-
-std::vector<Node*> Pathfinder::aStar(Node* start, Node* dest)
-{
-    Location startLoc = {start->col, start->row};
-    Location destLoc = {dest->col, dest->row};
-    return aStar(startLoc, destLoc);
-=======
->>>>>>> Stashed changes
 }
 
 void Pathfinder::toggleWall(const Location& loc)
 {
-<<<<<<< Updated upstream
-    return sqrt( pow(abs(a->col - b->col), 2) + pow(abs(a->row - b->row), 2) );
-=======
     Node& node = m_grid[loc.row * m_cols + loc.col];
     node.isWall = !node.isWall;
->>>>>>> Stashed changes
 }
 
 void Pathfinder::randomizeWalls(int percentChance)
@@ -155,14 +134,6 @@ void Pathfinder::emptyGrid()
     }
 }
 
-<<<<<<< Updated upstream
-Node* Pathfinder::getGrid() const
-{
-    return m_grid;
-}
-
-=======
->>>>>>> Stashed changes
 int Pathfinder::getCols() const
 {
     return m_cols;

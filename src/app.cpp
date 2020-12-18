@@ -1,7 +1,5 @@
 #include "app.h"
 
-#include <iostream>
-
 App::App(int numOfCols, int numOfRows, bool useDiagonals) : m_pathfinder(numOfCols, numOfRows, useDiagonals)
 {
     m_SQDIM = 800/numOfCols;
@@ -53,13 +51,7 @@ void App::handleInput()
         {
             int col = e.button.x/m_SQDIM;
             int row = e.button.y/m_SQDIM;
-<<<<<<< Updated upstream
-            int index = row * m_pathfinder.getCols() + col;
-            Node* grid = m_pathfinder.getGrid();
-            Node* clickedNode = &grid[index];
-=======
             const Node* clickedNode = &m_pathfinder.getNode({col, row});
->>>>>>> Stashed changes
 
             if (e.button.button == SDL_BUTTON_LEFT)
             {
@@ -96,16 +88,10 @@ void App::handleInput()
                 if (m_destNode) {
                     m_pathfinder.resetPath();
                 }
-<<<<<<< Updated upstream
-                m_beginNode = nullptr;
-                m_endNode = nullptr;
-                clickedNode->isWall = !clickedNode->isWall;
-=======
                 m_startNode = nullptr;
                 m_destNode = nullptr;
                 m_prevDragWallToggle = clickedNode;
                 m_pathfinder.toggleWall(clickedNode->loc);
->>>>>>> Stashed changes
             }
             break;
         }
@@ -124,14 +110,7 @@ void App::handleInput()
 
             if (m_dragStartNode || m_dragDestNode)
             {
-<<<<<<< Updated upstream
-                int col = e.motion.x/m_SQDIM;
-                int row = e.motion.y/m_SQDIM;
-                Node* hoverNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
-                if (!hoverNode->isWall && hoverNode != m_beginNode && hoverNode != m_endNode)
-=======
                 if (!hoverNode->isWall && hoverNode != m_startNode && hoverNode != m_destNode)
->>>>>>> Stashed changes
                 {
                     if (m_dragDestNode) { m_destNode = hoverNode; };
                     if (m_dragStartNode) { m_startNode = hoverNode; };
@@ -158,12 +137,7 @@ void App::draw()
     {
         for (int col = 0; col < m_pathfinder.getCols(); col++)
         {
-<<<<<<< Updated upstream
-            Node* curNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
-            SDL_Color color = getNodeColor(curNode);
-=======
             const SDL_Color& color = getNodeColor({col, row});
->>>>>>> Stashed changes
 
             SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
@@ -185,11 +159,7 @@ void App::draw()
     SDL_RenderPresent(m_renderer);
 }
 
-<<<<<<< Updated upstream
-SDL_Color App::getNodeColor(Node* node)
-=======
 SDL_Color App::getNodeColor(const Location& loc)
->>>>>>> Stashed changes
 {
     const Node& node = m_pathfinder.getNode(loc);
 
