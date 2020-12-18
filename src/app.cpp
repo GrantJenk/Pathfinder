@@ -1,14 +1,19 @@
 #include "app.h"
 
+#include <iostream>
+
 App::App(int numOfCols, int numOfRows, bool useDiagonals) : m_pathfinder(numOfCols, numOfRows, useDiagonals)
 {
+    m_SQDIM = 800/numOfCols;
     m_running = true;
     m_window = nullptr;
     m_renderer = nullptr;
-    m_dragStartNode = m_dragEndNode = false;
-    m_beginNode = nullptr;
-    m_endNode = nullptr;
-    m_SQDIM = 800/numOfCols;
+    m_isDraggingWall = false;
+    m_dragStartNode = false;
+    m_dragDestNode = false;
+    m_prevDragWallToggle = nullptr;
+    m_startNode = nullptr;
+    m_destNode = nullptr;
 
     SDL_Init(SDL_INIT_VIDEO);
     m_window = SDL_CreateWindow("A* Pathfinder", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, SDL_WINDOW_RESIZABLE);
@@ -48,69 +53,96 @@ void App::handleInput()
         {
             int col = e.button.x/m_SQDIM;
             int row = e.button.y/m_SQDIM;
+<<<<<<< Updated upstream
             int index = row * m_pathfinder.getCols() + col;
             Node* grid = m_pathfinder.getGrid();
             Node* clickedNode = &grid[index];
+=======
+            const Node* clickedNode = &m_pathfinder.getNode({col, row});
+>>>>>>> Stashed changes
 
             if (e.button.button == SDL_BUTTON_LEFT)
             {
-                if (grid[index].isWall)
+                if (clickedNode->isWall)
                     return;
 
-                if (clickedNode == m_beginNode && m_endNode != nullptr)
+                if (clickedNode == m_startNode && m_destNode != nullptr)
                 {
                     m_dragStartNode = true;
                 }
-                else if (clickedNode == m_endNode)
+                else if (clickedNode == m_destNode)
                 {
-                    m_dragEndNode = true;
+                    m_dragDestNode = true;
                 }
-                else if (m_beginNode == nullptr)
+                else if (m_startNode == nullptr)
                 {
-                    m_beginNode = clickedNode;
+                    m_startNode = clickedNode;
                 }
-                else if (m_endNode == nullptr)
+                else if (m_destNode == nullptr)
                 {
-                    m_endNode = clickedNode;
-                    m_pathfinder.aStar(m_beginNode, m_endNode);
+                    m_destNode = clickedNode;
+                    m_pathfinder.aStar(m_startNode->loc, m_destNode->loc);
                 }
-                else if (m_beginNode != nullptr && m_endNode != nullptr)
+                else if (m_startNode != nullptr && m_destNode != nullptr)
                 {
                     m_pathfinder.resetPath();
-                    m_beginNode = clickedNode;
-                    m_endNode = nullptr;
+                    m_startNode = clickedNode;
+                    m_destNode = nullptr;
                 }
             }
             else if (e.button.button == SDL_BUTTON_RIGHT)
             {
-                if (m_endNode) {
+                m_isDraggingWall = true;
+                if (m_destNode) {
                     m_pathfinder.resetPath();
                 }
+<<<<<<< Updated upstream
                 m_beginNode = nullptr;
                 m_endNode = nullptr;
                 clickedNode->isWall = !clickedNode->isWall;
+=======
+                m_startNode = nullptr;
+                m_destNode = nullptr;
+                m_prevDragWallToggle = clickedNode;
+                m_pathfinder.toggleWall(clickedNode->loc);
+>>>>>>> Stashed changes
             }
-        break;
+            break;
         }
 
         case SDL_MOUSEBUTTONUP:
+            m_isDraggingWall = false;
             m_dragStartNode = false;
-            m_dragEndNode = false;
+            m_dragDestNode = false;
+            m_prevDragWallToggle = nullptr;
             break;
 
         case SDL_MOUSEMOTION:
-            if (m_dragStartNode || m_dragEndNode)
+            int col = e.motion.x/m_SQDIM;
+            int row = e.motion.y/m_SQDIM;
+            const Node* hoverNode = &m_pathfinder.getNode({col, row});
+
+            if (m_dragStartNode || m_dragDestNode)
             {
+<<<<<<< Updated upstream
                 int col = e.motion.x/m_SQDIM;
                 int row = e.motion.y/m_SQDIM;
                 Node* hoverNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
                 if (!hoverNode->isWall && hoverNode != m_beginNode && hoverNode != m_endNode)
+=======
+                if (!hoverNode->isWall && hoverNode != m_startNode && hoverNode != m_destNode)
+>>>>>>> Stashed changes
                 {
-                    if (m_dragEndNode) { m_endNode = hoverNode; };
-                    if (m_dragStartNode) { m_beginNode = hoverNode; };
+                    if (m_dragDestNode) { m_destNode = hoverNode; };
+                    if (m_dragStartNode) { m_startNode = hoverNode; };
                     m_pathfinder.resetPath();
-                    m_pathfinder.aStar(m_beginNode, m_endNode);
+                    m_pathfinder.aStar(m_startNode->loc, m_destNode->loc);
                 }
+            }
+            else if (m_isDraggingWall && m_prevDragWallToggle != hoverNode)
+            {
+                m_prevDragWallToggle = hoverNode;
+                m_pathfinder.toggleWall(hoverNode->loc);
             }
             break;
         }
@@ -126,8 +158,12 @@ void App::draw()
     {
         for (int col = 0; col < m_pathfinder.getCols(); col++)
         {
+<<<<<<< Updated upstream
             Node* curNode = &m_pathfinder.getGrid()[row * m_pathfinder.getCols() + col];
             SDL_Color color = getNodeColor(curNode);
+=======
+            const SDL_Color& color = getNodeColor({col, row});
+>>>>>>> Stashed changes
 
             SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
@@ -149,18 +185,24 @@ void App::draw()
     SDL_RenderPresent(m_renderer);
 }
 
+<<<<<<< Updated upstream
 SDL_Color App::getNodeColor(Node* node)
+=======
+SDL_Color App::getNodeColor(const Location& loc)
+>>>>>>> Stashed changes
 {
-    if (node == m_beginNode)
+    const Node& node = m_pathfinder.getNode(loc);
+
+    if (&node == m_startNode)
         return {0, 255, 0, 255};
-    else if (node == m_endNode)
+    else if (&node == m_destNode)
         return {255, 0, 0, 255};
 
-    if (node->inPath)
+    if (node.inPath)
         return {0, 200, 255, 255};
-    else if (node->isWall)
+    else if (node.isWall)
         return {0, 0, 0, 255};
-    else if (node->visited)
+    else if (node.visited)
         return {200, 200, 255, 255};
 
     return {255, 255, 255, 255};
