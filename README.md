@@ -8,6 +8,7 @@ Pathfinder using A* search algorithm, written in C++
 - Custom grid size
 - Randomize walls
 - Add or remove walls with right click
+- Drag while holding right click to toggle walls
 - Select start and end nodes with left click
 - Drag start and end nodes
 - Toggle diagonal traversing
