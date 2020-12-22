@@ -125,6 +125,8 @@ void Pathfinder::resetPath()
 
 void Pathfinder::emptyGrid()
 {
+    m_grid.clear();
+
     for (int r = 0; r < m_rows; r++)
     {
         for (int c = 0; c < m_cols; c++)
@@ -149,12 +151,6 @@ const Node& Pathfinder::getNode(const Location& loc) const
     return m_grid[loc.row * m_cols + loc.col];
 }
 
-/*
-std::vector<Node> Pathfinder::getGrid() const
-{
-    return m_grid;
-}
-*/
 float Pathfinder::heuristic(const Node& a, const Node& b) const
 {
     return sqrt( pow(abs(a.loc.col - b.loc.col), 2) + pow(abs(a.loc.row - b.loc.row), 2) );
