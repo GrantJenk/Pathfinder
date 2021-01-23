@@ -1,5 +1,6 @@
 # Pathfinding Visualizer
-Pathfinder using A* search algorithm, written in C++
+Pathfinder using A* search algorithm, written in C++  
+A version written in Rust using Piston can be found [here](https://github.com/GrantJenk/Pathfinder-rs).
 
 ## Dependencies
 - SDL2
